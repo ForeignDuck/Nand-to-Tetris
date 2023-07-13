@@ -1,0 +1,16 @@
+// This is an AND gate. 
+
+/* Gate description
+   if (a == 1 and b == 1) then out = 1 
+   else out = 0
+*/ 
+ 
+CHIP And {
+    IN a, b;
+    OUT out;
+
+    PARTS:
+    Nand(a=a, b=b, out=NandOut);
+	Not(in=NandOut, out=out);
+	
+}

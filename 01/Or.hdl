@@ -1,0 +1,19 @@
+// This is an OR gate. 
+
+/* Gate description
+   if (a == 1 or b == 1) then out = 1 
+   else out = 0
+
+*/ 
+ 
+CHIP Or {
+    IN a, b;
+    OUT out;
+
+    PARTS:
+	Not(in=a , out=NotInA);
+	Not(in=b , out=NotInB);
+	And(a=NotInA , b=NotInB , out=AndOut); 
+	Not(in=AndOut, out=out);
+	
+}

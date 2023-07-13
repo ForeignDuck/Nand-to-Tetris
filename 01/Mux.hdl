@@ -1,0 +1,36 @@
+// This is an Mux gate. 
+
+/* Gate description
+   if sel == 0 then out = a
+   else b
+   
+*/ 
+ 
+CHIP Mux {
+    IN a, b, sel;
+    OUT out;
+
+    PARTS:
+	
+	Not(in=a , out=Nota);
+	Not(in=b , out=Notb);
+	Not(in=sel , out=Notsel);
+	
+	//First level of AND,
+	And(a=a , b=Notb , out=AndOut11); 
+	And(a=a , b=b , out=AndOut12); 
+	And(a=Nota , b=b , out=AndOut13); 
+	And(a=a , b=b , out=AndOut14); 
+	
+	//Second level of ANDs 
+	And(a=AndOut11 , b=Notsel , out=AndOut21); 
+	And(a=AndOut12 , b=Notsel , out=AndOut22); 
+	And(a=AndOut13 , b=sel , out=AndOut23); 
+	And(a=AndOut14 , b=sel , out=AndOut24); 
+	
+	Or(a=AndOut21 , b=AndOut22 , out=OrOut1 );
+	Or(a=AndOut23 , b=AndOut24 , out=OrOut2 );
+	Or(a=OrOut1 , b=OrOut2 , out=out );
+	
+	//Both level of ANDS can be simplified by 4 3wayAND and 1 4wayOr.
+}

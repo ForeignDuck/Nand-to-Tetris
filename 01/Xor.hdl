@@ -1,0 +1,21 @@
+// This is an XOR gate. 
+
+/* Gate description
+   if (a == b) then out = 0
+   else out = 1
+
+*/ 
+ 
+CHIP Xor {
+    IN a, b;
+    OUT out;
+
+    PARTS:
+	
+	Not(in=a , out=NotInA);
+	Not(in=b , out=NotInB);
+	And(a=NotInA , b=b , out=AndOut1); 
+	And(a=a , b=NotInB , out=AndOut2); 
+	Or(a=AndOut1 , b=AndOut2 , out=out);
+	
+}

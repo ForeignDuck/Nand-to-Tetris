@@ -1,0 +1,27 @@
+// This is a 16-bit Extender
+
+
+CHIP BitExtender16 {
+    IN a[16], b[16];
+    OUT out[16];
+
+    PARTS:
+    
+	And(a=a[0], b=b[0],out=out[0]);
+	And(a=a[0], b=b[0],out=out[1]);
+	And(a=a[0], b=b[0],out=out[2]);
+	And(a=a[0], b=b[0],out=out[3]);
+	And(a=a[0], b=b[0],out=out[4]);
+	And(a=a[0], b=b[0],out=out[5]);
+	And(a=a[0], b=b[0],out=out[6]);
+	And(a=a[0], b=b[0],out=out[7]);
+	And(a=a[0], b=b[0],out=out[8]);
+	And(a=a[0], b=b[0],out=out[9]);
+	And(a=a[0], b=b[0],out=out[10]);
+	And(a=a[0], b=b[0],out=out[11]);
+	And(a=a[0], b=b[0],out=out[12]);
+	And(a=a[0], b=b[0],out=out[13]);
+	And(a=a[0], b=b[0],out=out[14]);
+	And(a=a[0], b=b[0],out=out[15]);
+	
+}

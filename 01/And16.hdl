@@ -1,0 +1,16 @@
+// This is an 16-bit AND gate. 
+
+/* Gate description
+   if (a == 1 and b == 1) then out = 1 
+   else out = 0
+*/ 
+ 
+CHIP And16 {
+    IN a[16], b[16];
+    OUT out[16];
+
+    PARTS:
+    Nand16(a=a, b=b, out=NandOut);
+	Not16(in=NandOut, out=out);
+	
+}
