@@ -17,5 +17,5 @@ Chapters
 11 - Compiler II: Code Generation;
 12 -  Operating System;
 
-The book focuses on using HDL (Hardware Descriptive Language) a custom-made, simplified version of VHDL and the programming language Jax for educational porpuses.
+The book focuses on using HDL (Hardware Descriptive Language), which is a custom-made and simplified version of VHDL. It also uses the Jax programming language for educational porpuses.
 I decided to add a personal touch by trying the same exercises with X86 assembly code and C.  
