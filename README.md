@@ -3,7 +3,7 @@ This is a collection of exercises I have done following the Nand to Tetris book
 The first 6 chapter treat the hardware side of a PC, while the other half addresses the software side.
 Highly recomended book. 
 
-Chapters
+Chapters:
 01 - Boolean Logic;
 02 - Boolean Arithmetic;
 03 - Sequential Logic;
