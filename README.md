@@ -4,6 +4,7 @@ The first 6 chapter treat the hardware side of a PC, while the other half addres
 Highly recomended book. 
 
 Chapters:
+
 01-Boolean Logic;  
 02-Boolean Arithmetic;  
 03-Sequential Logic;  
