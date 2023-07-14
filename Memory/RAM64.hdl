@@ -1,0 +1,29 @@
+
+/*
+   stored at the memory location specified by address. If load==1, then 
+   the in value is loaded into the memory location specified by address 
+   (the loaded value will be emitted to out from the next time step onward).
+*/
+
+CHIP RAM64 {
+    IN in[16], load, address[6];
+    OUT out[16];
+
+    PARTS:
+	
+	DMux8Way(in=load ,sel=address[3..5] , a=DmuxOut1, b=DmuxOut2, c=DmuxOut3, d=DmuxOut4, e=DmuxOut5, f=DmuxOut6, g=DmuxOut7, h=DmuxOut8);
+	
+	
+	RAM8(in=in, load=DmuxOut1, address=address[0..2] , out=outReg1);
+	RAM8(in=in, load=DmuxOut2, address=address[0..2] , out=outReg2);
+	RAM8(in=in, load=DmuxOut3, address=address[0..2] , out=outReg3);
+	RAM8(in=in, load=DmuxOut4, address=address[0..2] , out=outReg4);
+	RAM8(in=in, load=DmuxOut5, address=address[0..2] , out=outReg5);
+	RAM8(in=in, load=DmuxOut6, address=address[0..2] , out=outReg6);
+	RAM8(in=in, load=DmuxOut7, address=address[0..2] , out=outReg7);
+	RAM8(in=in, load=DmuxOut8, address=address[0..2] , out=outReg8);
+	
+
+	Mux8Way16(a=outReg1, b=outReg2, c=outReg3, d=outReg4, e=outReg5, f=outReg6, g=outReg7, h=outReg8, sel=address[3..5], out=out );
+    
+}
