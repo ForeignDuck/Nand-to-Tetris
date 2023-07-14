@@ -1,0 +1,21 @@
+/*
+  Computes the sum of three bits.
+*/
+
+CHIP FullAdder {
+    IN a, b, c;  // 1-bit inputs
+    OUT sum,     // Right bit of a + b + c LSB
+        carry;   // Left bit of a + b + c MSM
+
+    PARTS:
+	//1st level adder
+	HalfAdder(a=a,b=b,sum=sum1,carry=carry1);
+	
+	//2nd level adder
+	HalfAdder(a=sum1,b=c,sum=sum,carry=carry2);
+	
+	//Taking the carry from either adder, never both.
+	Xor(a=carry1, b=carry2, out=carry);
+    
+	
+}
