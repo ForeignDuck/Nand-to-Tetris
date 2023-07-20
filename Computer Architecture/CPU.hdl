@@ -1,0 +1,124 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/05/CPU.hdl
+
+/**
+ * The Hack CPU (Central Processing unit), consisting of an ALU,
+ * two registers named A and D, and a program counter named PC.
+ * The CPU is designed to fetch and execute instructions written in 
+ * the Hack machine language. In particular, functions as follows:
+ * Executes the inputted instruction according to the Hack machine 
+ * language specification. The D and A in the language specification
+ * refer to CPU-resident registers, while M refers to the external
+ * memory location addressed by A, i.e. to Memory[A]. The inM input 
+ * holds the value of this location. If the current instruction needs 
+ * to write a value to M, the value is placed in outM, the address 
+ * of the target location is placed in the addressM output, and the 
+ * writeM control bit is asserted. (When writeM==0, any value may 
+ * appear in outM). The outM and writeM outputs are combinational: 
+ * they are affected instantaneously by the execution of the current 
+ * instruction. The addressM and pc outputs are clocked: although they 
+ * are affected by the execution of the current instruction, they commit 
+ * to their new values only in the next time step. If reset==1 then the 
+ * CPU jumps to address 0 (i.e. pc is set to 0 in next time step) rather 
+ * than to the address resulting from executing the current instruction. 
+ */
+
+CHIP CPU {
+
+    IN  inM[16],         // M value input  (M = contents of RAM[A])
+        instruction[16], // Instruction for execution
+        reset;           // Signals whether to re-start the current
+                         // program (reset==1) or continue executing
+                         // the current program (reset==0).
+
+    OUT outM[16],        // M value output
+        writeM,          // Write to M? 
+        addressM[15],    // Address in data memory (of M)
+        pc[15];          // address of next instruction
+
+    PARTS:
+    
+	// First Mux16 in diagram and its control bit
+	
+		Mux16(a=instruction ,b=ALUout ,sel=instruction[15] , out=Mux16Out );
+	
+	//if bit[15]==0 then you
+	
+		Not(in=instruction[15],out=notC);  					 // if instruction[15]= 0 then it is a A instruction
+		Or(a=notC,b=instruction[5],out=loadAreg); 			// use notC to always load A register if it is a A instruction
+		ARegister(in=Mux16Out ,load=loadAreg ,out=ARegOut, out[0..14]=addressM);
+	
+	//ALU inputs
+	//This Mux selects between using the A register or data coming from the Memory inM
+
+		And(a=instruction[15],b=instruction[12],out=DorMOut); // Use the Memory M only if there is a C Instruction.  
+		Mux16(a=ARegOut ,b=inM ,sel=DorMOut , out=Mux16Out2 ); // sends A or M to ALU to be computed
+		
+		And(a=instruction[15],b=instruction[4],out=Dload); // If there is a C Instruction, load the data register D.
+		DRegister(in=ALUout ,load=Dload ,out=DRegOut );
+	
+	//ALU chip
+	
+		ALU(x=DRegOut ,y=Mux16Out2 ,zx=instruction[11] ,nx=instruction[10] ,zy=instruction[9] ,ny=instruction[8] ,f=instruction[7] ,no=instruction[6] ,out=ALUout, out=outM ,zr=outzr ,ng=outng );
+
+	//Passing the writeM, it has to be a c instruction and writeM(3)
+	
+		And(a=instruction[3],b=instruction[15],out=writeM);
+	
+	// PC control
+	
+	// If reset==1 then PC=0, it is embeded inside.
+	
+		PC(in=ARegOut,load=PCload ,inc= true ,reset=reset ,out[0..14]=pc );
+	
+		// Test Jump conditions 
+		
+		Not(in=outzr,out=NotZero);
+		Not(in=outng,out=MoreOrEqual0);
+		
+		And(a=instruction[0],b=instruction[15], out=Testjump3); //test if C instruction
+		And(a=instruction[1],b=instruction[15], out=Testjump2); //test if C instruction
+		And(a=instruction[2],b=instruction[15], out=Testjump1); //test if C instruction
+		
+		// JGT
+		
+		And(a=Testjump3,b=MoreOrEqual0, out=JGT1);
+		And(a=JGT1,b=NotZero,out=JGT);
+		
+		// JEQ
+		
+		And(a=Testjump2,b=outzr, out=JEQ);
+		
+		// JGE
+		
+		And(a=Testjump2,b=Testjump3, out=JGE1);
+		And(a=JGE1,b=MoreOrEqual0,out=JGE);
+		
+		// JLT
+		
+		And(a=Testjump1,b=outng, out=JLT);
+		
+		// JNE
+		
+		And(a=Testjump1,b=Testjump3,out=JNE1);
+		And(a=JNE1,b=NotZero,out=JNE);
+		
+		// JLE
+		
+		And(a=Testjump1,b=Testjump2,out=JLE1);
+		And(a=JLE1,b=outzr,out=JLE2);
+		And(a=JLE2,b=outng,out=JLE);
+		
+		// JMP
+		
+		And(a=Testjump1,b=Testjump2,out=JMP1);
+		And(a=JMP1,b=Testjump3,out=JMP); 		
+			
+			
+		// in[0]=JGT,JEQ...etc, anyone works
+		Or8Way(in[0]=JMP,in[1]=JGT,in[2]=JEQ,in[3]=JGE,in[4]=JLT,in[5]=JNE,in[6]=JLE,in[7]=JMP,out=PCload);
+	
+
+}
